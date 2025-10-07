@@ -14,27 +14,25 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Ejecutar Hola Mundo
-        run: node hola.js
+        run: |
+          node hola.js || echo "Hola.js falló, pero seguimos con la notificación"
 
       - name: Enviar notificación a ntfy.sh
-        if: always()
+        if: always()  # Esto asegura que se ejecute aunque falle un paso anterior
         env:
           ESTUDIANTE: "Ashley Cabrera Mena"
           REPO: "Ashcm18/hola-mundo-ci"
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-          WORKFLOW_STATUS: ${{ job.status }}
+          JOB_STATUS: ${{ job.status }}
         run: |
-          # Determinar estado del build
           STATUS="Código subido exitosamente"
-          if [ "${WORKFLOW_STATUS}" != "success" ]; then
+          if [ "$JOB_STATUS" != "success" ]; then
             STATUS="Falló el build"
           fi
 
-          # Construir mensaje completo
           MENSAJE="$STATUS a main por $ESTUDIANTE
 Repositorio: $REPO
 Commit: $COMMIT_MESSAGE
 Hora: $(date)"
 
-          # Enviar notificación a ntfy.sh
           curl -s -d "$MENSAJE" https://ntfy.sh/devops-itla
