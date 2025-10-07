@@ -1,4 +1,4 @@
-name: Notificación CI/CD Simple
+name: CI/CD - Notificación completa
 
 on:
   push:
@@ -14,25 +14,33 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Ejecutar Hola Mundo
-        run: node hola.js || echo "Hola.js falló, continuamos con la notificación"
+        run: node hola.js || echo "hola.js falló, pero continuamos con la notificación"
 
       - name: Enviar notificación a ntfy.sh
         if: always()
         env:
           ESTUDIANTE: "Ashley Cabrera Mena"
           REPO: "Ashcm18/hola-mundo-ci"
+          RUTA_REPO: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          COMMIT_SHA: ${{ github.event.head_commit.id }}
+          WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           JOB_STATUS: ${{ job.status }}
         run: |
           if [ "$JOB_STATUS" == "success" ]; then
-            STATUS="Código subido exitosamente"
+            STATUS="BUILD EXITOSO"
           else
-            STATUS="Falló el build"
+            STATUS="BUILD FALLIDO"
           fi
 
-          MENSAJE="$STATUS a main por $ESTUDIANTE
-Repositorio: $REPO
-Commit: $COMMIT_MESSAGE
-Hora: $(date)"
+          MENSAJE="$STATUS - DevOps ITLA
+Build completado con estado: $STATUS
+📦 Repositorio: $REPO
+🌿 Rama: $BRANCH
+👤 Autor: $ESTUDIANTE
+💬 Commit: $COMMIT_MESSAGE
+🔖 SHA: $COMMIT_SHA
+🔗 Logs: $WORKFLOW_URL"
 
           curl -s -d "$MENSAJE" https://ntfy.sh/devops-itla
