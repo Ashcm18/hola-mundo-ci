@@ -18,21 +18,25 @@ jobs:
           node hola.js || echo "Hola.js falló, pero seguimos con la notificación"
 
       - name: Enviar notificación a ntfy.sh
-        if: always()  # Esto asegura que se ejecute aunque falle un paso anterior
+        if: always()
         env:
           ESTUDIANTE: "Ashley Cabrera Mena"
           REPO: "Ashcm18/hola-mundo-ci"
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
           JOB_STATUS: ${{ job.status }}
         run: |
-          STATUS="Código subido exitosamente"
-          if [ "$JOB_STATUS" != "success" ]; then
+          # Determinar estado del build
+          if [ "$JOB_STATUS" == "success" ]; then
+            STATUS="Código subido exitosamente"
+          else
             STATUS="Falló el build"
           fi
 
+          # Construir mensaje completo
           MENSAJE="$STATUS a main por $ESTUDIANTE
 Repositorio: $REPO
 Commit: $COMMIT_MESSAGE
 Hora: $(date)"
 
+          # Enviar notificación a ntfy.sh
           curl -s -d "$MENSAJE" https://ntfy.sh/devops-itla
