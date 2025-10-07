@@ -8,6 +8,7 @@ on:
 jobs:
   build-and-notify:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -16,14 +17,5 @@ jobs:
         run: node hola.js
 
       - name: Enviar notificación a ntfy.sh
-        env:
-          COMMIT_AUTHOR: ${{ github.actor }}
-          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          # Construimos el mensaje
-          MENSAJE="Push realizado al repositorio main
-Autor: $COMMIT_AUTHOR
-Mensaje: $COMMIT_MESSAGE"
-
-          # Enviamos la notificación con curl
-          curl -s -d "$MENSAJE" https://ntfy.sh/devops-itla
+          curl -d "Se ha hecho push al repositorio main" https://ntfy.sh/devops-itla
