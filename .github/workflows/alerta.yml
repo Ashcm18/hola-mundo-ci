@@ -1,4 +1,4 @@
-name: CI/CD - Notificación completa
+name: CI/CD - Notificación simple
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Ejecutar Hola Mundo
+      - name: Ejecutar hola.js
         run: node hola.js || echo "hola.js falló, pero continuamos con la notificación"
 
       - name: Enviar notificación a ntfy.sh
@@ -21,7 +21,6 @@ jobs:
         env:
           ESTUDIANTE: "Ashley Cabrera Mena"
           REPO: "Ashcm18/hola-mundo-ci"
-          RUTA_REPO: ${{ github.repository }}
           BRANCH: ${{ github.ref_name }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
           COMMIT_SHA: ${{ github.event.head_commit.id }}
@@ -36,11 +35,11 @@ jobs:
 
           MENSAJE="$STATUS - DevOps ITLA
 Build completado con estado: $STATUS
-📦 Repositorio: $REPO
-🌿 Rama: $BRANCH
-👤 Autor: $ESTUDIANTE
-💬 Commit: $COMMIT_MESSAGE
-🔖 SHA: $COMMIT_SHA
-🔗 Logs: $WORKFLOW_URL"
+Repositorio: $REPO
+Rama: $BRANCH
+Autor: $ESTUDIANTE
+Commit: $COMMIT_MESSAGE
+SHA: $COMMIT_SHA
+Logs: $WORKFLOW_URL"
 
           curl -s -d "$MENSAJE" https://ntfy.sh/devops-itla
