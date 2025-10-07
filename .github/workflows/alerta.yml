@@ -1,4 +1,4 @@
-name: CI/CD - Notificación simple
+name: CI/CD - Notificación funcional
 
 on:
   push:
@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: Ejecutar hola.js
-        run: node hola.js || echo "hola.js falló, pero continuamos con la notificación"
+        run: node hola.js || echo "hola.js falló, continuamos con la notificación"
 
       - name: Enviar notificación a ntfy.sh
         if: always()
@@ -27,12 +27,14 @@ jobs:
           WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           JOB_STATUS: ${{ job.status }}
         run: |
+          # Determinar estado del build
           if [ "$JOB_STATUS" == "success" ]; then
             STATUS="BUILD EXITOSO"
           else
             STATUS="BUILD FALLIDO"
           fi
 
+          # Crear mensaje completo dentro de una variable
           MENSAJE="$STATUS - DevOps ITLA
 Build completado con estado: $STATUS
 Repositorio: $REPO
@@ -42,4 +44,5 @@ Commit: $COMMIT_MESSAGE
 SHA: $COMMIT_SHA
 Logs: $WORKFLOW_URL"
 
+          # Enviar notificación
           curl -s -d "$MENSAJE" https://ntfy.sh/devops-itla
