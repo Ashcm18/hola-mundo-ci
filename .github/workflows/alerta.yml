@@ -18,7 +18,5 @@ jobs:
 
       - name: Enviar notificación a ntfy.sh
         run: |
-          MENSAJE="Se ha hecho push al repositorio main por Ashley Cabrera Mena
-Repositorio: Ashcm18/hola-mundo-ci"
-
+          MENSAJE="Se ha hecho push al repositorio main por Ashley Cabrera Mena. Repositorio: Ashcm18/hola-mundo-ci"
           curl -d "$MENSAJE" https://ntfy.sh/devops-itla
