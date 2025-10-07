@@ -17,5 +17,16 @@ jobs:
         run: node hola.js
 
       - name: Enviar notificación a ntfy.sh
+        env:
+          COMMIT_AUTHOR: ${{ github.actor }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          curl -d "Se ha hecho push al repositorio main" https://ntfy.sh/devops-itla
+          STATUS="EXITOSO"
+          # Si falla algún paso previo, se marcará FALLIDO
+          if [ $GITHUB_RUN_ATTEMPT -ne 1 ]; then
+            STATUS="FALLIDO"
+          fi
+          curl -d "Push realizado al repositorio main
+Estado: $STATUS
+Autor: $COMMIT_AUTHOR
+Mensaje: $COMMIT_MESSAGE" https://ntfy.sh/devops-itla
