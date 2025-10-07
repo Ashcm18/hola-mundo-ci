@@ -8,7 +8,6 @@ on:
 jobs:
   build-and-notify:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -21,12 +20,6 @@ jobs:
           COMMIT_AUTHOR: ${{ github.actor }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          STATUS="EXITOSO"
-          # Si falla algún paso previo, se marcará FALLIDO
-          if [ $GITHUB_RUN_ATTEMPT -ne 1 ]; then
-            STATUS="FALLIDO"
-          fi
           curl -d "Push realizado al repositorio main
-Estado: $STATUS
 Autor: $COMMIT_AUTHOR
 Mensaje: $COMMIT_MESSAGE" https://ntfy.sh/devops-itla
