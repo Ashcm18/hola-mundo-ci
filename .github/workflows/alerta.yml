@@ -20,6 +20,10 @@ jobs:
           COMMIT_AUTHOR: ${{ github.actor }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          curl -d "Push realizado al repositorio main
+          # Construimos el mensaje
+          MENSAJE="Push realizado al repositorio main
 Autor: $COMMIT_AUTHOR
-Mensaje: $COMMIT_MESSAGE" https://ntfy.sh/devops-itla
+Mensaje: $COMMIT_MESSAGE"
+
+          # Enviamos la notificación con curl
+          curl -s -d "$MENSAJE" https://ntfy.sh/devops-itla
