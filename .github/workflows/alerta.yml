@@ -19,9 +19,9 @@ jobs:
       - name: Enviar notificación a ntfy.sh
         if: always()
         env:
-          COMMIT_AUTHOR: ${{ github.actor }}
+          ESTUDIANTE: "Ashley Cabrera Mena"
+          REPO: "Ashcm18/hola-mundo-ci"
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-          REPO: ${{ github.repository }}
           WORKFLOW_STATUS: ${{ job.status }}
         run: |
           # Determinar estado del build
@@ -31,7 +31,7 @@ jobs:
           fi
 
           # Construir mensaje completo
-          MENSAJE="$STATUS a main por $COMMIT_AUTHOR
+          MENSAJE="$STATUS a main por $ESTUDIANTE
 Repositorio: $REPO
 Commit: $COMMIT_MESSAGE
 Hora: $(date)"
