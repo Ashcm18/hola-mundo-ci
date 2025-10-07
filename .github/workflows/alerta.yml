@@ -1,4 +1,4 @@
-name: Notificación de CI
+name: Notificación CI/CD Profesional
 
 on:
   push:
@@ -17,5 +17,24 @@ jobs:
         run: node hola.js
 
       - name: Enviar notificación a ntfy.sh
+        if: always()
+        env:
+          COMMIT_AUTHOR: ${{ github.actor }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          REPO: ${{ github.repository }}
+          WORKFLOW_STATUS: ${{ job.status }}
         run: |
-          curl -d "Se ha hecho push al repositorio main" https://ntfy.sh/devops-itla
+          # Determinar estado del build
+          STATUS="Código subido exitosamente"
+          if [ "${WORKFLOW_STATUS}" != "success" ]; then
+            STATUS="Falló el build"
+          fi
+
+          # Construir mensaje completo
+          MENSAJE="$STATUS a main por $COMMIT_AUTHOR
+Repositorio: $REPO
+Commit: $COMMIT_MESSAGE
+Hora: $(date)"
+
+          # Enviar notificación a ntfy.sh
+          curl -s -d "$MENSAJE" https://ntfy.sh/devops-itla
